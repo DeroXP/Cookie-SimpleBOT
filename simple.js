@@ -77,7 +77,7 @@ function clickBigCookie() {
 }
 
 document.addEventListener("click", function() {
-    setInterval(throttledCheckAndClickProducts, 5000);
+    setInterval(throttledCheckAndClickProducts, 10000);
     setInterval(throttledClickBigCookie, 1000);
 });
 
