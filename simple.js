@@ -28,40 +28,37 @@ function simulateClick(element) {
     }
 }
 
-function checkAndClickProductsByColor(color) {
-    let bestProduct = null;
+// Define the colors in order of priority
+const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(255, 0, 0)'];
 
-    for (let productElement of productElements) {
-        if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
-            let priceElement = productElement.querySelector('.price');
+function checkAndClickProductsByColor() {
+    for (let color of colors) {
+        let bestProduct = null;
 
-            if (priceElement && priceElement.style.color === color) {
-                bestProduct = productElement;
+        for (let productElement of productElements) {
+            if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
+                let priceElement = productElement.querySelector('.price');
+
+                if (priceElement && priceElement.style.color === color) {
+                    bestProduct = productElement;
+                }
             }
         }
-    }
 
-    if (bestProduct && bestProduct.classList.contains("enabled")) {
-        simulateClick(bestProduct);
-        return true;
+        if (bestProduct && bestProduct.classList.contains("enabled")) {
+            simulateClick(bestProduct);
+            return true;
+        }
     }
 
     return false;
 }
 
 function checkAndClickProducts() {
-    let found = checkAndClickProductsByColor('rgb(0, 255, 0)');
+    let found = checkAndClickProductsByColor();
 
     if (!found) {
-        found = checkAndClickProductsByColor('rgb(255, 255, 0)');
-    }
-
-    if (!found) {
-        found = checkAndClickProductsByColor('rgb(255, 127, 0)');
-    }
-
-    if (!found) {
-        checkAndClickProductsByColor('rgb(255, 0, 0)');
+        setTimeout(checkAndClickProducts, 1000);
     }
 }
 
