@@ -28,7 +28,6 @@ function simulateClick(element) {
     }
 }
 
-// Define the colors in order of priority
 const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(255, 0, 0)'];
 
 function checkAndClickProductsByColor() {
@@ -45,9 +44,12 @@ function checkAndClickProductsByColor() {
             }
         }
 
-        if (bestProduct && bestProduct.classList.contains("enabled")) {
-            simulateClick(bestProduct);
-            return true;
+        if (bestProduct) {
+            console.log(`Best product: ${bestProduct.id}, Status: ${bestProduct.classList.contains("enabled") ? "Enabled" : "Disabled"}`);
+            if (bestProduct.classList.contains("enabled")) {
+                simulateClick(bestProduct);
+                return true;
+            }
         }
     }
 
