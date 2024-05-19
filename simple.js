@@ -53,7 +53,7 @@ function clickBigCookie() {
 }
 
 document.addEventListener("click", function() {
-    setInterval(checkAndClickProducts, 10);
+    setInterval(checkAndClickProducts, 100);
 
     const clickInterval = 1;
     setInterval(clickBigCookie, clickInterval);
