@@ -36,7 +36,7 @@ function checkAndClickProductsByColor() {
         let bestProduct = null;
 
         for (let productElement of productElements) {
-            if (productElement.classList.contains("unlocked") && !productElement.classList.contains("disabled")) {
+            if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
                 let priceElement = productElement.querySelector('.price');
 
                 if (priceElement && priceElement.style.color === color) {
@@ -47,9 +47,15 @@ function checkAndClickProductsByColor() {
             }
         }
 
-        if (bestProduct && bestProduct.classList.contains("enabled")) {
-            simulateClick(bestProduct);
-            found = true;
+        if (bestProduct) {
+            let intervalId = setInterval(() => {
+                if (bestProduct.classList.contains("enabled")) {
+                    simulateClick(bestProduct);
+                    found = true;
+                    clearInterval(intervalId);
+                }
+            }, 1000);
+
             break;
         }
     }
