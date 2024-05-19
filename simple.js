@@ -8,15 +8,14 @@ function simulateClick(element) {
 function checkAndClickProductsByColor(color) {
     let index = 0;
     let productElement = document.getElementById(`product${index}`);
-    let found = false;
+    let bestProduct = null;
 
     while (productElement) {
-        if (productElement.classList.contains("unlocked") && productElement.classList.contains("enabled")) {
+        if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
             let priceElement = productElement.querySelector('.price');
 
             if (priceElement && priceElement.style.color === color) {
-                simulateClick(productElement);
-                found = true;
+                bestProduct = productElement;
             }
         }
 
@@ -24,7 +23,12 @@ function checkAndClickProductsByColor(color) {
         productElement = document.getElementById(`product${index}`);
     }
 
-    return found;
+    if (bestProduct && bestProduct.classList.contains("enabled")) {
+        simulateClick(bestProduct);
+        return true;
+    }
+
+    return false;
 }
 
 function checkAndClickProducts() {
