@@ -1,5 +1,5 @@
 // this uses cookie monster to get best options and then simulates clicking best option and also does automactic cookie clicks which cannot make it go faster, since idk
-// function to limit how often a function can be called
+// Function to limit how often a function can be called
 function throttle(func, limit) {
     let inThrottle;
     return function() {
@@ -59,7 +59,7 @@ function checkAndClickProductsByColor() {
                         found = true;
                         clearInterval(intervalId);
                     }
-                }, 5000);
+                }, 1000);
             }
             break;
         }
@@ -72,7 +72,7 @@ function checkAndClickProducts() {
     let found = checkAndClickProductsByColor();
 
     if (!found) {
-        setTimeout(checkAndClickProducts, 1000);
+        setTimeout(checkAndClickProducts, 1000); // Retry after 1 second if no product was found
     }
 }
 
@@ -80,9 +80,11 @@ function clickBigCookie() {
     throttledClickBigCookie();
 }
 
-document.addEventListener("click", function() {
+document.addEventListener("DOMContentLoaded", function() {
     setInterval(throttledCheckAndClickProducts, 10000);
     setInterval(throttledClickBigCookie, 1000);
 });
 
-javascript: (function () {   Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
+// Load Cookie Monster
+javascript: (function () { Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
+
