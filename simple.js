@@ -52,9 +52,11 @@ function clickBigCookie() {
     simulateClick(bigCookie);
 }
 
-setInterval(checkAndClickProducts, 100);
+document.addEventListener("click", function() {
+    setInterval(checkAndClickProducts, 10);
 
-const clickInterval = 1;
-setInterval(clickBigCookie, clickInterval);
+    const clickInterval = 1;
+    setInterval(clickBigCookie, clickInterval);
+});
 
 javascript: (function () {   Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
