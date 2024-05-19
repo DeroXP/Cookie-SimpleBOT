@@ -54,7 +54,7 @@ function checkAndClickProductsByColor() {
                     found = true;
                     clearInterval(intervalId);
                 }
-            }, 1000);
+            }, 5000);
 
             break;
         }
@@ -76,7 +76,7 @@ function clickBigCookie() {
 }
 
 document.addEventListener("click", function() {
-    setInterval(throttledCheckAndClickProducts, 5000);
+    setInterval(throttledCheckAndClickProducts, 10000);
     setInterval(throttledClickBigCookie, 1000);
 });
 
