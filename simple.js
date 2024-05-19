@@ -1,21 +1,22 @@
+// this uses cookie monster to get best options and then simulates clicking best option and also does automactic cookie clicks which cannot make it go faster, since idk
 function simulateClick(element) {
     if (element) {
         element.click();
     }
 }
 
-function checkAndClickProducts() {
+function checkAndClickProductsByColor(color) {
     let index = 0;
     let productElement = document.getElementById(`product${index}`);
-    let foundGreenPrice = false;
+    let found = false;
 
     while (productElement) {
         if (productElement.classList.contains("unlocked") && productElement.classList.contains("enabled")) {
             let priceElement = productElement.querySelector('.price');
 
-            if (priceElement && priceElement.style.color === 'rgb(0, 255, 0)') {
+            if (priceElement && priceElement.style.color === color) {
                 simulateClick(productElement);
-                foundGreenPrice = true;
+                found = true;
             }
         }
 
@@ -23,22 +24,22 @@ function checkAndClickProducts() {
         productElement = document.getElementById(`product${index}`);
     }
 
-    if (!foundGreenPrice) {
-        index = 0;
-        productElement = document.getElementById(`product${index}`);
+    return found;
+}
 
-        while (productElement) {
-            if (productElement.classList.contains("unlocked") && productElement.classList.contains("enabled")) {
-                let priceElement = productElement.querySelector('.price');
+function checkAndClickProducts() {
+    let found = checkAndClickProductsByColor('rgb(0, 255, 0)');
 
-                if (priceElement && priceElement.style.color === 'rgb(255, 255, 0)') {
-                    simulateClick(productElement);
-                }
-            }
+    if (!found) {
+        found = checkAndClickProductsByColor('rgb(255, 255, 0)');
+    }
 
-            index++;
-            productElement = document.getElementById(`product${index}`);
-        }
+    if (!found) {
+        found = checkAndClickProductsByColor('rgb(255, 127, 0)');
+    }
+
+    if (!found) {
+        checkAndClickProductsByColor('rgb(255, 0, 0)');
     }
 }
 
