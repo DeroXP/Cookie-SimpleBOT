@@ -36,28 +36,25 @@ function checkAndClickProductsByColor() {
         let bestProduct = null;
 
         for (let productElement of productElements) {
-            if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
+            if (productElement.classList.contains("unlocked") && !productElement.classList.contains("disabled")) {
                 let priceElement = productElement.querySelector('.price');
 
                 if (priceElement && priceElement.style.color === color) {
-                    if (!bestProduct || parseInt(priceElement.textContent) < parseInt(bestProduct.querySelector('.price').textContent)) {
+                    if (!bestProduct || parseInt(priceElement.textContent.replace(/,/g, '')) < parseInt(bestProduct.querySelector('.price').textContent.replace(/,/g, ''))) {
                         bestProduct = productElement;
                     }
                 }
             }
         }
 
-        if (bestProduct) {
-            //console.log(`Best product: ${bestProduct.id}, Status: ${bestProduct.classList.contains("enabled") ? "Enabled" : "Disabled"}`);
-            if (bestProduct.classList.contains("enabled")) {
-                simulateClick(bestProduct);
-                found = true;
-                return true;
-            }
+        if (bestProduct && bestProduct.classList.contains("enabled")) {
+            simulateClick(bestProduct);
+            found = true;
+            break;
         }
     }
 
-    return found; // Return whether any eligible product was found and clicked
+    return found;
 }
 
 function checkAndClickProducts() {
