@@ -32,11 +32,12 @@ const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(2
 
 function checkAndClickProductsByColor() {
     let found = false;
+    
     for (let color of colors) {
         let bestProduct = null;
 
         for (let productElement of productElements) {
-            if (productElement.classList.contains("unlocked") && productElement.classList.contains("disabled")) {
+            if (productElement.classList.contains("unlocked")) {
                 let priceElement = productElement.querySelector('.price');
 
                 if (priceElement && priceElement.style.color === color) {
@@ -48,14 +49,18 @@ function checkAndClickProductsByColor() {
         }
 
         if (bestProduct) {
-            let intervalId = setInterval(() => {
-                if (bestProduct.classList.contains("enabled")) {
-                    simulateClick(bestProduct);
-                    found = true;
-                    clearInterval(intervalId);
-                }
-            }, 5000);
-
+            if (bestProduct.classList.contains("enabled")) {
+                simulateClick(bestProduct);
+                found = true;
+            } else {
+                let intervalId = setInterval(() => {
+                    if (bestProduct.classList.contains("enabled")) {
+                        simulateClick(bestProduct);
+                        found = true;
+                        clearInterval(intervalId);
+                    }
+                }, 5000);
+            }
             break;
         }
     }
