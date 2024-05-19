@@ -32,35 +32,30 @@ const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(2
 
 function checkAndClickProductsByColor() {
     let found = false;
-    for (let color of colors) {
-        let bestProduct = null;
+    for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+        let bestProducts = productElements
+            .filter(pe => pe.querySelector('.price')?.style.color === color)
+            .sort((a, b) => parseInt(a.querySelector('.price').textContent.replace(/,/g, '')) - parseInt(b.querySelector('.price').textContent.replace(/,/g, '')));
 
-        for (let productElement of productElements) {
-            if (productElement.classList.contains("unlocked")) {
-                let priceElement = productElement.querySelector('.price');
-
-                if (priceElement && priceElement.style.color === color) {
-                    if (!bestProduct || parseInt(priceElement.textContent.replace(/,/g, '')) < parseInt(bestProduct.querySelector('.price').textContent.replace(/,/g, ''))) {
-                        bestProduct = productElement;
+        if (bestProducts.length > 0) {
+            let bestProduct = bestProducts[0];
+            if (bestProduct.classList.contains("enabled")) {
+                simulateClick(bestProduct);
+                found = true;
+                break;
+            } else if (bestProduct.classList.contains("disabled")) {
+                var checkExist = setInterval(function() {
+                    if (bestProduct.classList.contains("enabled")) {
+                        simulateClick(bestProduct);
+                        found = true;
+                        clearInterval(checkExist);
                     }
-                }
+                }, 1000);
+                break;
             }
         }
-
-        if (bestProduct && bestProduct.classList.contains("enabled")) {
-            simulateClick(bestProduct);
-            found = true;
-        } else if (bestProduct && bestProduct.classList.contains("disabled")) {
-            var checkExist = setInterval(function() {
-                if (bestProduct.classList.contains("enabled")) {
-                    simulateClick(bestProduct);
-                    found = true;
-                    clearInterval(checkExist);
-                }
-            }, 1000);
-        }
     }
-
     return found;
 }
 
@@ -68,7 +63,7 @@ function checkAndClickProducts() {
     let found = checkAndClickProductsByColor();
 
     if (!found) {
-        setTimeout(checkAndClickProducts, 1000);
+        setTimeout(checkAndClickProducts, 5000);
     }
 }
 
@@ -78,7 +73,7 @@ function clickBigCookie() {
 
 document.addEventListener("click", function() {
     setInterval(throttledCheckAndClickProducts, 10000);
-    setInterval(throttledClickBigCookie, 1000);
+    setInterval(throttledClickBigCookie, 10000);
 });
 
 javascript: (function () {   Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
