@@ -13,6 +13,12 @@ function throttle(func, limit) {
     };
 }
 
+function simulateClick(element) {
+    if (element) {
+        element.click();
+    }
+}
+
 const bigCookie = document.getElementById("bigCookie");
 let productElements = [];
 for (let i = 0; document.getElementById(`product${i}`); i++) {
@@ -22,57 +28,38 @@ for (let i = 0; document.getElementById(`product${i}`); i++) {
 const throttledClickBigCookie = throttle(() => simulateClick(bigCookie), 100);
 const throttledCheckAndClickProducts = throttle(checkAndClickProducts, 1000);
 
-function simulateClick(element) {
-    if (element) {
-        element.click();
-    }
-}
-
 const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(255, 0, 0)'];
 
 function checkAndClickProductsByColor() {
-    let found = false;
-    
     for (let color of colors) {
-        let bestProduct = null;
-
         for (let productElement of productElements) {
             if (productElement.classList.contains("unlocked")) {
                 let priceElement = productElement.querySelector('.price');
 
                 if (priceElement && priceElement.style.color === color) {
-                    if (!bestProduct || parseInt(priceElement.textContent.replace(/,/g, '')) < parseInt(bestProduct.querySelector('.price').textContent.replace(/,/g, ''))) {
-                        bestProduct = productElement;
+                    if (productElement.classList.contains("enabled")) {
+                        simulateClick(productElement);
+                        return true;
+                    } else {
+                        let intervalId = setInterval(() => {
+                            if (productElement.classList.contains("enabled")) {
+                                simulateClick(productElement);
+                                clearInterval(intervalId);
+                            }
+                        }, 1000);
+                        return true;
                     }
                 }
             }
         }
-
-        if (bestProduct) {
-            if (bestProduct.classList.contains("enabled")) {
-                simulateClick(bestProduct);
-                found = true;
-            } else {
-                let intervalId = setInterval(() => {
-                    if (bestProduct.classList.contains("enabled")) {
-                        simulateClick(bestProduct);
-                        found = true;
-                        clearInterval(intervalId);
-                    }
-                }, 1000);
-            }
-            break;
-        }
     }
-
-    return found;
+    return false;
 }
 
 function checkAndClickProducts() {
     let found = checkAndClickProductsByColor();
-
     if (!found) {
-        setTimeout(checkAndClickProducts, 1000); // Retry after 1 second if no product was found
+        setTimeout(checkAndClickProducts, 1000);
     }
 }
 
@@ -81,10 +68,10 @@ function clickBigCookie() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    setInterval(throttledCheckAndClickProducts, 10000);
-    setInterval(throttledClickBigCookie, 1000);
+    setInterval(throttledCheckAndClickProducts, 1000);
+    setInterval(throttledClickBigCookie, 100);
 });
 
-// Load Cookie Monster
-javascript: (function () { Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
-
+(function () { 
+    Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); 
+})();
