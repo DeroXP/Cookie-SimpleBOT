@@ -73,7 +73,7 @@ function clickBigCookie() {
 
 document.addEventListener("click", function() {
     setInterval(throttledCheckAndClickProducts, 10000);
-    setInterval(throttledClickBigCookie, 10000);
+    setInterval(throttledClickBigCookie, 10);
 });
 
 javascript: (function () {   Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
