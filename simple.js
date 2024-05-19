@@ -1,5 +1,4 @@
 // this uses cookie monster to get best options and then simulates clicking best option and also does automactic cookie clicks which cannot make it go faster, since idk
-// function to limit how often a function can be called
 function throttle(func, limit) {
     let inThrottle;
     return function() {
@@ -13,14 +12,20 @@ function throttle(func, limit) {
     };
 }
 
-const bigCookie = document.getElementById("bigCookie");
-let productElements = [];
-for (let i = 0; document.getElementById(`product${i}`); i++) {
-    productElements.push(document.getElementById(`product${i}`));
+function debounce(func, delay) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
 }
 
+const bigCookie = document.getElementById("bigCookie");
+let productElements = Array.from(document.querySelectorAll('[id^="product"]'));
+
 const throttledClickBigCookie = throttle(() => simulateClick(bigCookie), 100);
-const throttledCheckAndClickProducts = throttle(checkAndClickProducts, 1000);
 
 function simulateClick(element) {
     if (element) {
@@ -31,7 +36,6 @@ function simulateClick(element) {
 const colors = ['rgb(0, 255, 0)', 'rgb(255, 255, 0)', 'rgb(255, 127, 0)', 'rgb(255, 0, 0)'];
 
 function checkAndClickProductsByColor() {
-    let found = false;
     for (let color of colors) {
         let bestProduct = null;
 
@@ -47,23 +51,19 @@ function checkAndClickProductsByColor() {
             }
         }
 
-        if (bestProduct) {
-            //console.log(`Best product: ${bestProduct.id}, Status: ${bestProduct.classList.contains("enabled") ? "Enabled" : "Disabled"}`);
-            if (bestProduct.classList.contains("enabled")) {
-                simulateClick(bestProduct);
-                found = true;
-                return true;
-            }
+        if (bestProduct && bestProduct.classList.contains("enabled")) {
+            simulateClick(bestProduct);
+            return true;
         }
     }
 
-    return found; // Return whether any eligible product was found and clicked
+    return false;
 }
 
-function checkAndClickProducts() {
-    let found = checkAndClickProductsByColor();
+const debouncedCheckAndClickProducts = debounce(checkAndClickProductsByColor, 1000);
 
-    if (!found) {
+function checkAndClickProducts() {
+    if (!debouncedCheckAndClickProducts()) {
         setTimeout(checkAndClickProducts, 1000);
     }
 }
@@ -73,8 +73,11 @@ function clickBigCookie() {
 }
 
 document.addEventListener("click", function() {
-    setInterval(throttledCheckAndClickProducts, 1000);
-    setInterval(throttledClickBigCookie, 100);
+    requestAnimationFrame(function loop() {
+        throttledClickBigCookie();
+        requestAnimationFrame(loop);
+    });
+    setInterval(checkAndClickProducts, 5000);
 });
 
 javascript: (function () {   Game.LoadMod('https://cookiemonsterteam.github.io/CookieMonster/dist/CookieMonster.js'); })();
